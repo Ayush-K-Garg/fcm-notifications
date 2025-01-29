@@ -1,9 +1,10 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
+require('dotenv').config(); // Load environment variables
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require('D:/Web Dev/fcm-notifications/pro-1-d9ae4-firebase-adminsdk-iimfo-d33db4baec.json');
+const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -33,7 +34,9 @@ app.post('/send-notification', async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
+// Use environment variable for port or default to 3000
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
