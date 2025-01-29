@@ -29,30 +29,36 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// Set up Express server
+// Set up the express server
 const app = express();
 app.use(bodyParser.json());
 
-// Endpoint to send notifications
+// Handle the POST request for sending notifications
 app.post('/send-notification', async (req, res) => {
   const { title, body, topic } = req.body;
 
   const message = {
-    notification: { title, body },
-    topic,
+    notification: {
+      title: title,
+      body: body,
+    },
+    topic: topic,
   };
 
   try {
     const response = await admin.messaging().send(message);
-    res.status(200).send({ message: 'Notification sent', response });
+    res.status(200).send({ message: 'Notification sent', response: response });
   } catch (error) {
     res.status(500).send({ message: 'Error sending notification', error: error.message });
   }
 });
+
+// Log whether Firebase credentials were successfully loaded
 console.log("Firebase Credentials:", process.env.FIREBASE_CREDENTIALS ? "Loaded" : "Not Found");
 
-// Start server
+// Use environment variable for port or default to 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
   console.log(`✅ Server running on port ${PORT}`);
 });
