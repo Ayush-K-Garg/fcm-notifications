@@ -2,6 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
+// Enable CORS (optional)
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
 
 // Ensure FIREBASE_CREDENTIALS is properly loaded
 if (!process.env.FIREBASE_CREDENTIALS) {
@@ -29,9 +35,10 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// Set up the express server
-const app = express();
-app.use(bodyParser.json());
+// Root route (optional, just to check server)
+app.get('/', (req, res) => {
+  res.send('Server is running!');
+});
 
 // Handle the POST request for sending notifications
 app.post('/send-notification', async (req, res) => {
